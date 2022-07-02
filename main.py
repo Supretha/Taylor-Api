@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 def getAlbumDetails(albumName):
     #testing
-
+    #testing 2
     if albumName=="Taylor Swift":
         suffix = "(album)"
     else:
