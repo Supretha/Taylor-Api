@@ -41,4 +41,4 @@ def getAlbumDetails(albumName):
     return jsonData
 
 def getTrackDetails(track):
-    pass
+    return {"track": track}
