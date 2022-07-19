@@ -1,14 +1,22 @@
 from scrap import getAlbumDetails
+from flask import Flask
+from flask_restful import Api, Resource, reqparse
+import requests
 
-# albumName = input("Enter album Name: ")
-#jsonResponse = getAlbumDetails(albumName)
-# print(jsonResponse)
-
-# 1. Get album name from the url as string
-# 2. Pass it to the getAlbumDetails function and store the returned jsonResponse in a variable
-# 3. Return the jsonResponse
-
-# Write your code from below
+class Album(Resource):
+    def get(self,album):
+        details= getAlbumDetails(album)
+        return details
 
 
+app= Flask(__name__)
+api=Api(app)
+
+api.add_resource(Album,"/albums/<string:album>")
+
+
+
+
+if __name__== "__main__":
+    app.run()
 

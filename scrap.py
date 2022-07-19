@@ -39,3 +39,6 @@ def getAlbumDetails(albumName):
     jsonData["Tracks"] = allTracks
 
     return jsonData
+
+def getTrackDetails(track):
+    pass
