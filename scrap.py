@@ -1,3 +1,4 @@
+from webbrowser import get
 import requests
 from bs4 import BeautifulSoup
 
@@ -40,5 +41,42 @@ def getAlbumDetails(albumName):
 
     return jsonData
 
+def getTrackHTML(track,suffix):
+    URL = f"https://music.fandom.com/wiki/{track}{suffix}"
+    page = requests.get(URL)
+    soup = BeautifulSoup(page.content, "html.parser")
+    trackHTML = soup.find_all("table",class_="vevent")
+    return trackHTML
+
 def getTrackDetails(track):
-    return {"track": track}
+
+    trackHTML = getTrackHTML(track,"")    
+    
+    if len(trackHTML)==0:
+        trackHTML = getTrackHTML(track,"_(song)")
+        if len(trackHTML)==0:
+            trackHTML = getTrackHTML(track,"_(Taylor_Swift_song)")
+            if len(trackHTML)==0:
+                return {"message":"Not enough data. Try other songs"}
+
+    jsonData = dict()
+
+    #Getting track name
+    title = trackHTML[0].find("th",class_="summary")
+    jsonData["title"] = title.text.strip()
+
+    #Getting Image URL
+    try:
+        imgURL = trackHTML[0].find("a",{"class":"image"}).get("href")
+        jsonData["image"] = imgURL
+    except:
+        pass
+
+    #Getting Album Information
+    infoKeys = trackHTML[0].find_all("th",attrs={"style":"width: 5.2em; text-align: left;"})
+    infoValues = trackHTML[0].find_all("td",attrs={"style":"width: 14em;"})
+
+    for i in range(len(infoKeys)):
+        jsonData[infoKeys[i].text.strip()] = infoValues[i].text.strip()
+
+    return jsonData
